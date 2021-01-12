@@ -1,7 +1,3 @@
-def main():
-    return generate_report(load_data())
-
-
 def load_data(filepath=None):
     ''' Retrieves and pack data from the excel database of archive resources '''
 
@@ -32,7 +28,7 @@ def load_data(filepath=None):
     return archive
 
 
-def generate_report(archive):
+def generate_catalogs(archive):
     ''' Generates the requested Word file accordingly to all the authors formatting rules '''
 
     from os import path, mkdir, getcwd
@@ -64,4 +60,24 @@ def generate_report(archive):
             par.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         doc.save(f'{getcwd()}\\reports\\CATALOGO {folder.upper()}.docx')
 
-main()
+def install_packages():
+    from os import path, getcwd
+    from subprocess import call
+    
+    if not path.isfile(f'{getcwd()}\\requirements.txt'):
+        print('ERROR : no dependencies register found in your distribution')
+        print('FIX ATTEMP : trying to retrive required packages ...')
+        call('pip freeze>requirements.txt', shell=True)
+    else:
+        call('pip install --upgrade -r requirements.txt', shell=True)
+
+def setup():
+    from subprocess import call
+    from os import getcwd, path
+
+    if not path.isdir(f'{getcwd()}\\venv'):
+        call('python -m venv venv')
+    install_packages()
+
+setup()
+generate_catalogs(load_data())
